@@ -1,0 +1,57 @@
+css
+Copy code
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #f2f2f2;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+}
+
+nav ul li a:hover {
+    background-color: #555;
+}
+
+main {
+    padding: 20px;
+}
+
+.match {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.match h3 {
+    margin: 0;
+}
+
+.match p {
+    margin-top: 5px;
+}

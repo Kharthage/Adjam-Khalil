@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saisie des paris</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Saisie des paris</h1>
+    <form id="paris-form">
+        <div id="matchs-container">
+            <!-- Les matchs sélectionnés avec les détails et les paris à saisir seront ajoutés ici dynamiquement -->
+        </div>
+        <button type="submit" id="valider-button">Valider ma sélection</button>
+    </form>
+<<!-- Au clic sur « Miser sur la sélection », l’utilisateur a accès à une interface semblable à
+l’US 4. Chaque ligne des matchs sélectionnés sera affichée et l’utilisateur devra
+spécifier son pari.
+Au terme de sa saisie, il cliquera sur un bouton « Valider ma sélection » qui demandera
+une seconde confirmation, par précaution. Cela entraîne, la mise à jour de l’espace
+utilisateur.
+-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const parisForm = document.getElementById("paris-form");
+            const matchsContainer = document.getElementById("matchs-container");
+
+            // Simuler les matchs sélectionnés avec leurs détails
+            const matchsSelectionnes = [
+                {
+                    id: 1,
+                    equipes: ["Équipe A", "Équipe B"],
+                    date_debut: "2024-02-17T14:00:00",
+                    cote_equipes: { equipes: [1.5, 2.3] }
+                },
+                {
+                    id: 2,
+                    equipes: ["Équipe C", "Équipe D"],
+                    date_debut: "2024-02-18T15:30:00",
+                    cote_equipes: { equipes: [1.7, 1.9] }
+                }
+            ];
+
+            matchsSelectionnes.forEach(match => {
+                const matchDiv = document.createElement("div");
+                matchDiv.classList.add("match");
+
+                // Afficher les détails du match
+                matchDiv.innerHTML = `
+                    <h2>${match.equipes[0]} vs ${match.equipes[1]}</h2>
+                    <p>Date et heure de début: ${new Date(match.date_debut).toLocaleString()}</p>
+                    <p>Cote des équipes: ${match.cote_equipes.equipes[0]} - ${match.cote_equipes.equipes[1]}</p>
+
+                    <!-- Interface pour spécifier le pari -->
+                    <label for="pari-${match.id}">Montant de la mise:</label>
+                    <input type="number" id="pari-${match.id}" name="pari-${match.id}" required min="1">
+                    
+                    <label for="equipe-${match.id}">Choisissez une équipe:</label>
+                    <select id="equipe-${match.id}" name="equipe-${match.id}" required>
+                        <option value="${match.equipes[0]}">${match.equipes[0]}</option>
+                        <option value="${match.equipes[1]}">${match.equipes[1]}</option>
+                    </select>
+                `;
+
+                matchsContainer.appendChild(matchDiv);
+            });
+
+            // Confirmer la saisie avant de valider les paris
+            parisForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                if (confirm("Êtes-vous sûr de vouloir valider vos paris ?")) {
+                    validerParis();
+                }
+            });
+
+            function validerParis() {
+                // Récupérer les paris saisis pour chaque match sélectionné
+                const paris = [];
+                matchsSelectionnes.forEach(match => {
+                    const montant = document.getElementById(`pari-${match.id}`).value;
+                    const equipe = document.getElementById(`equipe-${match.id}`).value;
+                    paris.push({ match_id: match.id, montant, equipe });
+                });
+                // Envoyer les paris au serveur pour mise à jour de l'espace utilisateur
+                console.log("Paris saisis :", paris);
+                // Ici, vous pouvez envoyer les données au serveur via une requête AJAX ou tout autre moyen de communication
+                // Exemple :
+                /*
+                fetch('/valider-paris', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ paris })
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Paris soumis avec succès!');
+                    } else {
+                        alert('Erreur lors de la soumission des paris.');
+                    }
+                });
+                */
+            }
+        });
+    </script>
+</body>
+</html>

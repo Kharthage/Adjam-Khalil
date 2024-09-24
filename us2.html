@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Match</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Détails du Match</h1>
+        <div id="match-details">
+            <!-- Les informations sur le match seront affichées ici -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const matchId = /* Récupérer l'ID du match, par exemple depuis l'URL ou un stockage local */;
+            
+            try {
+                // Récupérer les données du match depuis le serveur
+                const response = await fetch(`https://votre-api.com/matchs/${matchId}`);
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données du match');
+                }
+                const matchDetails = await response.json();
+
+                const matchDetailsDiv = document.getElementById("match-details");
+                matchDetailsDiv.innerHTML = `
+                    <p><strong>Nom des équipes :</strong> ${matchDetails.equipes}</p>
+                    <p><strong>Heure de début :</strong> ${matchDetails.heure_debut}</p>
+                    <p><strong>Heure de fin :</strong> ${matchDetails.heure_fin}</p>
+                    <p><strong>Montants des cotes :</strong> ${matchDetails.cotes}</p>
+                    <p><strong>Nombre d'utilisateurs ayant parié :</strong> ${matchDetails.nb_parieurs}</p>
+                    <p><strong>Commentaires :</strong> ${matchDetails.commentaires}</p>
+                    <p><strong>Score :</strong> ${matchDetails.score}</p>
+                `;
+            } catch (error) {
+                console.error('Erreur:', error);
+                const matchDetailsDiv = document.getElementById("match-details");
+                matchDetailsDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

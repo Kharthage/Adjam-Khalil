@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des mises</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Historique des mises</h1>
+    <table id="historique-table">
+        <thead>
+            <tr>
+                <th>Noms des équipes</th>
+                <th>Date et heure du match</th>
+                <th>Mise effectuée</th>
+                <th>Montant gagné/perdu</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Les données de l'historique des mises seront affichées ici -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Récupérer l'historique des mises de l'utilisateur depuis le serveur
+            const historiqueMises = /* Insérer ici l'historique des mises de l'utilisateur */;
+
+            // Afficher l'historique des mises dans le tableau
+            const historiqueTable = document.getElementById("historique-table");
+            const tbody = historiqueTable.querySelector("tbody");
+
+            historiqueMises.forEach(mise => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${mise.equipes}</td>
+                    <td>${mise.date_match}</td>
+                    <td>${mise.mise} (${mise.date_mise})</td>
+                    <td>${mise.resultat}</td>
+                    <td>${mise.statut === 'En Cours' || mise.statut === 'À Venir' ? '<button onclick="supprimerMise()">Supprimer</button>' : '<button onclick="redirigerMise()">Mise à jour</button>'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        function supprimerMise() {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cette mise ?")) {
+                // Supprimer la mise
+                console.log("Mise supprimée !");
+            }
+        }
+
+        function redirigerMise() {
+            // Rediriger l'utilisateur vers la mise à jour de la mise
+            console.log("Redirection vers la mise à jour de la mise...");
+        }
+    </script>
+</body>
+</html>

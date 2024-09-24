@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mot de passe oublié</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Mot de passe oublié</h1>
+    <form id="reset-form">
+        <label for="nom">Nom:</label>
+        <input type="text" id="nom" name="nom" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Réinitialiser le mot de passe</button>
+    </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const resetForm = document.getElementById("reset-form");
+
+            resetForm.addEventListener("submit", async function(event) {
+                event.preventDefault();
+
+                const nom = document.getElementById("nom").value.trim();
+                const email = document.getElementById("email").value.trim();
+
+                // Validation de l'email
+                if (!validateEmail(email)) {
+                    alert("Veuillez entrer une adresse email valide.");
+                    return;
+                }
+
+                const formData = { nom, email };
+
+                try {
+                    // Envoyer les données de réinitialisation de mot de passe au serveur via AJAX
+                    const response = await fetch('/reset-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert("Un email avec les instructions pour réinitialiser votre mot de passe a été envoyé.");
+                        // Rediriger l'utilisateur vers une page de confirmation
+                    } else {
+                        alert("Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer.");
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de la réinitialisation :", error);
+                    alert("Problème technique. Veuillez réessayer plus tard.");
+                }
+            });
+
+            // Fonction de validation de l'email
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(String(email).toLowerCase());
+            }
+        });
+    </script>
+</body>
+</html>

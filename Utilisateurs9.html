@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Mon Espace</h1>
+    <div id="informations-utilisateur">
+        <!-- Les informations de l'utilisateur seront affichées ici -->
+    </div>
+    <div id="historique-mises">
+        <!-- L'historique des mises de l'utilisateur sera affiché ici -->
+    </div>
+    <div id="dashboard">
+        <!-- Le graphique du dashboard sera affiché ici -->
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            try {
+                // Récupérer les informations de l'utilisateur
+                const utilisateurResponse = await fetch('/api/utilisateur');
+                if (!utilisateurResponse.ok) throw new Error('Erreur lors de la récupération des informations utilisateur.');
+                const informationsUtilisateur = await utilisateurResponse.json();
+
+                // Afficher les informations de l'utilisateur
+                const informationsUtilisateurDiv = document.getElementById("informations-utilisateur");
+                informationsUtilisateurDiv.innerHTML = `
+                    <h2>Informations de l'utilisateur</h2>
+                    <p><strong>Nom:</strong> ${informationsUtilisateur.nom}</p>
+                    <p><strong>Prénom:</strong> ${informationsUtilisateur.prenom}</p>
+                    <p><strong>Email:</strong> ${informationsUtilisateur.email}</p>
+                `;
+
+                // Récupérer l'historique des mises
+                const misesResponse = await fetch('/api/utilisateur/historique-mises');
+                if (!misesResponse.ok) throw new Error('Erreur lors de la récupération de l\'historique des mises.');
+                const historiqueMises = await misesResponse.json();
+
+                // Afficher l'historique des mises
+                const historiqueMisesDiv = document.getElementById("historique-mises");
+                historiqueMisesDiv.innerHTML = `
+                    <h2>Historique des mises</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Équipe</th>
+                                <th>Montant</th>
+                                <th>Résultat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${historiqueMises.map(mise => `
+                                <tr>
+                                    <td>${mise.date}</td>
+                                    <td>${mise.equipe}</td>
+                                    <td>${mise.montant}</td>
+                                    <td>${mise.resultat}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                // Récupérer les données pour le graphique
+                const dashboardResponse = await fetch('/api/utilisateur/dashboard');
+                if (!dashboardResponse.ok) throw new Error('Erreur lors de la récupération des données du dashboard.');
+                const donneesDashboard = await dashboardResponse.json();
+
+                // Afficher le graphique
+                const dashboardDiv = document.getElementById("dashboard");
+                dashboardDiv.innerHTML = `<h2>Dashboard</h2><canvas id="dashboardChart"></canvas>`;
+                
+                const ctx = document.getElementById('dashboardChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: donneesDashboard.dates,
+                        datasets: [{
+                            label: 'Mises',
+                            data: donneesDashboard.mises,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            fill: false,
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: { beginAtZero: true },
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Erreur lors de la récupération des données:', error);
+                alert(`Une erreur est survenue : ${error.message}`);
+            }
+        });
+    </script>
+
+    <!-- Intégration de Chart.js pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
+

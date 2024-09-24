@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des matchs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Liste des matchs</h1>
+    <div id="matchs-container">
+        <!-- Les matchs seront ajoutés ici dynamiquement -->
+    </div>
+
+    <script>
+        const matchs = [
+            {
+                equipes: ["Équipe A", "Équipe B"],
+                date_debut: "2024-09-25T14:00:00",
+                date_fin: "2024-09-25T16:00:00",
+                statut: "Termine",
+                score_equipe_a: 2,
+                score_equipe_b: 1
+            },
+            {
+                equipes: ["Équipe C", "Équipe D"],
+                date_debut: "2024-09-26T18:00:00",
+                date_fin: "2024-09-26T20:00:00",
+                statut: "À venir",
+                score_equipe_a: null,
+                score_equipe_b: null
+            },
+            {
+                equipes: ["Équipe E", "Équipe F"],
+                date_debut: "2024-09-27T12:00:00",
+                date_fin: "2024-09-27T14:00:00",
+                statut: "En Cours",
+                score_equipe_a: 1,
+                score_equipe_b: 1
+            }
+        ];
+
+        const matchsContainer = document.getElementById("matchs-container");
+
+        matchs.forEach(match => {
+            const matchDiv = document.createElement("div");
+            matchDiv.classList.add("match");
+            
+            const equipes = match.equipes.join(" vs ");
+            const dateDebut = new Date(match.date_debut);
+            const dateFin = new Date(match.date_fin);
+            const statut = match.statut;
+
+            let statutText = "";
+            if (statut === "Termine" || statut === "En Cours") {
+                statutText = `${statut} (${match.score_equipe_a} - ${match.score_equipe_b})`;
+            } else {
+                statutText = statut;
+            }
+
+            matchDiv.innerHTML = `
+                <p><strong>Équipes:</strong> ${equipes}</p>
+                <p><strong>Date et heure:</strong> ${dateDebut.toLocaleString()} - ${dateFin.toLocaleString()}</p>
+                <p><strong>Statut:</strong> ${statutText}</p>
+            `;
+
+            matchsContainer.appendChild(matchDiv);
+        });
+    </script>
+</body>
+</html>

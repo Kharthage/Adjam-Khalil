@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parier sur les matchs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Parier sur les matchs</h1>
+    <form id="parier-form">
+        <div id="matchs-container">
+            <!-- Les matchs avec les cases à cocher seront ajoutés ici dynamiquement -->
+        </div>
+        <button type="submit" id="parier-button" disabled>Miser sur la sélection</button>
+    </form>
+
+    <script>
+        const utilisateurAuthentifie = true;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const parierButton = document.getElementById("parier-button");
+            const matchsContainer = document.getElementById("matchs-container");
+
+            const matchs = [
+                { id: 1, equipes: ["Équipe A", "Équipe B"] },
+                { id: 2, equipes: ["Équipe C", "Équipe D"] },
+                { id: 3, equipes: ["Équipe E", "Équipe F"] }
+            ];
+
+            matchs.forEach(match => {
+                const matchDiv = document.createElement("div");
+                matchDiv.classList.add("match");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.name = "match";
+                checkbox.value = match.id;
+                checkbox.addEventListener('change', checkSelection);
+                matchDiv.appendChild(checkbox);
+
+                const label = document.createElement("label");
+                label.textContent = `${match.equipes[0]} vs ${match.equipes[1]}`;
+                matchDiv.appendChild(label);
+
+                matchsContainer.appendChild(matchDiv);
+            });
+
+            if (utilisateurAuthentifie) {
+                checkSelection();  // Activer ou désactiver le bouton selon les sélections
+            }
+
+            function checkSelection() {
+                const matchsSelectionnes = document.querySelectorAll('input[name="match"]:checked');
+                parierButton.disabled = matchsSelectionnes.length === 0;
+            }
+
+            document.getElementById("parier-form").addEventListener("submit", function(event) {
+                event.preventDefault();
+                const matchsSelectionnes = Array.from(document.querySelectorAll('input[name="match"]:checked'))
+                    .map(input => matchs.find(m => m.id == input.value));
+                alert(`Vous avez sélectionné les matchs suivants : ${matchsSelectionnes.map(m => m.equipes.join(' vs ')).join(', ')}`);
+            });
+        });
+    </script>
+</body>
+</html>

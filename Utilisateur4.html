@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pari sur le match</title>
+</head>
+<!-- Le clic sur le bouton « miser » d’une vision détaillée est possible que si le visiteur est
+authentifié. Cela donne accès à une interface où on rappelle les cotes des équipes pour
+le match donné à l’utilisateur. Également, on demande à l’utilisateur combien il
+souhaite miser et sur quelle équipe. La validation de cette fenêtre entraîne un
+enregistrement dans l’espace utilisateur.
+Si une mise est déjà existante pour ce match, l’utilisateur n’aura pas un bouton
+« validation », mais « actualisation » (un remplissage de 0 pour les deux équipes
+entraîne la suppression de la mise) afin de mettre à jour sa mise. Bien sûr, l’espace
+utilisateur est mis à jour concernant cette mise. -->
+<body>
+    <h1>Pari sur le match</h1>
+
+    <div id="mise-container"></div>
+    <button id="mise-button">Miser</button>
+
+    <script>
+        // Simuler l'état d'authentification de l'utilisateur
+        const utilisateurAuthentifie = true;
+
+        // Simuler l'état de la mise existante pour ce match
+        const miseExistante = false; // changer à true si la mise existe
+
+        // Simuler les cotes des équipes
+        const coteEquipes = {
+            equipes: ["Équipe A", "Équipe B"],
+            cote: [1.5, 2.3] // Cotes respectives des deux équipes
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const miseButton = document.getElementById("mise-button");
+
+            if (utilisateurAuthentifie) {
+                if (miseExistante) {
+                    miseButton.innerText = "Actualiser";
+                } else {
+                    miseButton.innerText = "Miser";
+                    miseButton.addEventListener("click", afficherInterfaceMise);
+                }
+            } else {
+                miseButton.style.display = "none";
+            }
+        });
+
+        function afficherInterfaceMise() {
+            const miseContainer = document.getElementById("mise-container");
+
+            miseContainer.innerHTML = `
+                <p><strong>Cote des équipes:</strong> ${coteEquipes.equipes[0]} (${coteEquipes.cote[0]}) - 
+                ${coteEquipes.equipes[1]} (${coteEquipes.cote[1]})</p>
+                <label for="equipe">Choisissez une équipe:</label>
+                <select id="equipe" name="equipe">
+                    <option value="equipe_a">${coteEquipes.equipes[0]}</option>
+                    <option value="equipe_b">${coteEquipes.equipes[1]}</option>
+                </select>
+                <br><br>
+                <label for="montant">Montant de la mise:</label>
+                <input type="number" id="montant" name="montant" min="1" placeholder="Entrer un montant">
+                <br><br>
+                <button onclick="validerMise()">Valider</button>
+            `;
+        }
+
+        function validerMise() {
+            const equipeSelectionnee = document.getElementById("equipe").value;
+            const montantMise = document.getElementById("montant").value;
+
+            if (montantMise && montantMise > 0) {
+                console.log("Mise validée :", equipeSelectionnee, montantMise);
+                alert(`Mise validée : Équipe sélectionnée - ${equipeSelectionnee}, Montant - ${montantMise}`);
+            } else {
+                alert("Veuillez entrer un montant valide pour la mise.");
+            }
+        }
+    </script>
+</body>
+</html>

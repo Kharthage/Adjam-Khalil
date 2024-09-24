@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Inscription</h1>
+    <form id="inscription-form">
+        <label for="nom">Nom:</label>
+        <input type="text" id="nom" name="nom" required>
+        <label for="prenom">Prénom:</label>
+        <input type="text" id="prenom" name="prenom" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">S'inscrire</button>
+    </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const inscriptionForm = document.getElementById("inscription-form");
+
+            inscriptionForm.addEventListener("submit", async function(event) {
+                event.preventDefault();
+
+                const nom = document.getElementById("nom").value.trim();
+                const prenom = document.getElementById("prenom").value.trim();
+                const email = document.getElementById("email").value.trim();
+
+                // Vérification supplémentaire pour valider le format de l'email et les champs vides
+                if (!nom || !prenom || !validateEmail(email)) {
+                    alert("Veuillez remplir correctement tous les champs.");
+                    return;
+                }
+
+                const formData = { nom, prenom, email };
+
+                try {
+                    // Envoi des données d'inscription au serveur
+                    const response = await fetch('/inscription', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert("Inscription réussie ! Un email de validation a été envoyé à votre adresse.");
+                        // Redirection vers une page de confirmation ou autre action
+                    } else {
+                        alert("Erreur lors de l'inscription. Veuillez réessayer.");
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de l'envoi des données :", error);
+                    alert("Erreur de réseau. Veuillez réessayer plus tard.");
+                }
+            });
+
+            // Fonction pour valider l'adresse email
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(String(email).toLowerCase());
+            }
+        });
+    </script>
+</body>
+</html>

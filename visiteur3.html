@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du match</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Détails du match</h1>
+    <div id="match-details">
+        <!-- Les détails du match seront ajoutés ici dynamiquement -->
+    </div>
+    <!-- Le détail d’un match doit pouvoir afficher plusieurs éléments :
+    o Nom des équipes
+    o L’heure de début ainsi que l’heure de fin
+    o Leurs compositions : nombre de joueurs ainsi que le nom et prénom de chacun
+    o La cote des équipes
+    o Le statut du match
+    o La météo lors du match
+    o Les commentaires donnés par le commentateur ainsi que le score, s’il y a des
+    informations
+    o Un bouton « miser » doit être présent afin de pouvoir amorcer un pari :
+    seulement si le match n’est pas commencé ou terminé -->
+    <script>
+        const matchDetails = int; /* Insérez ici les détails du match au format JSON */
+
+        const matchDetailsContainer = document.getElementById("match-details");
+
+        const equipes = matchDetails.equipes.join(" vs ");
+        const dateDebut = new Date(matchDetails.date_debut);
+        const dateFin = new Date(matchDetails.date_fin);
+        const compositions = matchDetails.compositions;
+        const coteEquipes = matchDetails.cote_equipes;
+        const statut = matchDetails.statut;
+        const meteo = matchDetails.meteo;
+        const commentaires = matchDetails.commentaires;
+        const score = matchDetails.score;
+
+        let statutText = "";
+        if (statut === "Termine" || statut === "En Cours") {
+            statutText = `${statut} (${score.equipes[0]} - ${score.equipes[1]})`;
+        } else {
+            statutText = statut;
+        }
+
+        let compositionsHtml = "<ul>";
+        compositions.forEach(composition => {
+            compositionsHtml += `<li>${composition.nom} (${composition.nombre_joueurs}) : ${composition.joueurs.join(", ")}</li>`;
+        });
+        compositionsHtml += "</ul>";
+
+        let commentairesHtml = "";
+        if (commentaires.length > 0) {
+            commentairesHtml = "<ul>";
+            commentaires.forEach(commentaire => {
+                commentairesHtml += `<li>${commentaire}</li>`;
+            });
+            commentairesHtml += "</ul>";
+        } else {
+            commentairesHtml = "Aucun commentaire disponible.";
+        }
+
+        let miseButtonHtml = "";
+        if (statut === "À venir") {
+            miseButtonHtml = '<button onclick="amorcerPari()">Miser</button>';
+        }
+
+        matchDetailsContainer.innerHTML = `
+            <p><strong>Équipes:</strong> ${equipes}</p>
+            <p><strong>Date et heure de début:</strong> ${dateDebut.toLocaleString()}</p>
+            <p><strong>Date et heure de fin:</strong> ${dateFin.toLocaleString()}</p>
+            <p><strong>Compositions:</strong></p>
+            ${compositionsHtml}
+            <p><strong>Cote des équipes:</strong> ${coteEquipes.equipes[0]} - ${coteEquipes.equipes[1]}</p>
+            <p><strong>Statut:</strong> ${statutText}</p>
+            <p><strong>Météo:</strong> ${meteo}</p>
+            <p><strong>Commentaires:</strong></p>
+            ${commentairesHtml}
+            ${miseButtonHtml}
+        `;
+
+        function amorcerPari() {
+            // Logique pour amorcer un pari
+            console.log("Pari amorcé !");
+        }
+    </script>
+</body>
+</html>
